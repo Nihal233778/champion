@@ -1,169 +1,192 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-  <title>Champion Games — AdSonar TMA</title>
+  <title>Champion AdFlow — AdSonar TMA (Debug Mode)</title>
   <!-- Fonts & Icons -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  <!-- Telegram WebApp SDK -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  
+  <!-- AdSonar SDK with Debug Mode Enabled -->
+  <script src="https://static.sonartech.io/lib/1.0.0/sonar.js?appId=app_9de37db0&isDebug=true"></script>
+  
   <style>
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-      user-select: none;
       -webkit-tap-highlight-color: transparent;
     }
-
     body {
-      background: #f3f6fc;
+      background: #f1f5f9;
       font-family: 'Inter', sans-serif;
-      padding: 20px 16px 80px 16px;
-      color: #0b1e3a;
+      padding: 20px 16px 80px;
+      color: #0f172a;
     }
-
-    /* Main container */
-    .tma-container {
-      max-width: 560px;
+    .container {
+      max-width: 600px;
       margin: 0 auto;
     }
-
-    /* Header with balance & welcome */
-    .header-section {
+    .header {
       display: flex;
       justify-content: space-between;
-      align-items: center;
-      margin-bottom: 24px;
+      align-items: baseline;
       flex-wrap: wrap;
-      gap: 12px;
+      margin-bottom: 20px;
     }
-    .title-area h1 {
-      font-size: 26px;
+    .title-main {
+      font-size: 28px;
       font-weight: 800;
-      background: linear-gradient(135deg, #1f3a7c, #2c4b9e);
+      background: linear-gradient(135deg, #1E2A5E, #2A3E7C);
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
-      letter-spacing: -0.3px;
     }
-    .title-area p {
+    .demo-badge {
+      background: #e2e8f0;
+      padding: 6px 12px;
+      border-radius: 40px;
       font-size: 13px;
-      color: #4a627a;
-      margin-top: 4px;
+      font-weight: 600;
     }
-    .coin-balance {
-      background: #ffffffdd;
-      backdrop-filter: blur(8px);
+    .balance-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: white;
       border-radius: 60px;
       padding: 8px 18px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-      border: 1px solid rgba(59, 130, 246, 0.3);
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-weight: 700;
+      margin: 12px 0 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+      border: 1px solid #e2e8f0;
     }
-    .coin-balance i {
-      color: #f5b042;
-      font-size: 20px;
+    .balance-label {
+      font-weight: 600;
+      color: #334155;
     }
     .balance-value {
-      font-size: 22px;
+      font-size: 24px;
       font-weight: 800;
-      color: #1f3a7c;
+      color: #f5b042;
     }
-
-    /* Games grid */
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 28px;
+    }
+    .metric-card {
+      background: white;
+      border-radius: 28px;
+      padding: 14px 12px;
+      border: 1px solid #eef2f6;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.02);
+    }
+    .metric-title {
+      font-size: 12px;
+      font-weight: 500;
+      color: #475569;
+      margin-bottom: 8px;
+    }
+    .metric-value {
+      font-size: 24px;
+      font-weight: 800;
+      margin-bottom: 6px;
+    }
+    .metric-trend {
+      font-size: 12px;
+      color: #10b981;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .chart-container {
+      background: white;
+      border-radius: 28px;
+      padding: 16px;
+      margin-bottom: 28px;
+      border: 1px solid #eef2f6;
+    }
+    .chart-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      font-weight: 700;
+    }
+    canvas {
+      max-height: 200px;
+      width: 100%;
+    }
+    .section-title {
+      font-size: 20px;
+      font-weight: 700;
+      margin: 24px 0 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
     .games-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-      gap: 16px;
-      margin: 28px 0 32px;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 14px;
+      margin-bottom: 24px;
     }
     .game-card {
       background: white;
-      border-radius: 32px;
-      padding: 20px 12px 18px;
+      border-radius: 28px;
+      padding: 16px 8px 14px;
       text-align: center;
-      transition: all 0.2s ease;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.02), 0 2px 4px rgba(0, 0, 0, 0.02);
-      border: 1px solid #eef2fa;
       cursor: pointer;
+      transition: all 0.2s;
+      border: 1px solid #eef2f6;
     }
     .game-card:active {
       transform: scale(0.97);
-      background: #fefefe;
     }
     .game-icon {
-      font-size: 48px;
-      margin-bottom: 12px;
+      font-size: 42px;
+      margin-bottom: 8px;
     }
     .game-name {
       font-weight: 800;
-      font-size: 18px;
-      margin-bottom: 6px;
-      color: #0b2b44;
-    }
-    .game-stats {
-      font-size: 12px;
-      color: #5b6e8c;
-      margin: 8px 0;
-      background: #f0f4fa;
-      display: inline-block;
-      padding: 4px 12px;
-      border-radius: 40px;
+      font-size: 16px;
+      margin: 6px 0;
     }
     .play-btn {
       background: #2c4b9e;
       border: none;
       color: white;
       font-weight: 600;
-      padding: 8px 16px;
+      padding: 8px 12px;
       border-radius: 40px;
-      font-size: 13px;
+      font-size: 12px;
       width: 100%;
-      margin-top: 12px;
+      margin-top: 8px;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
-      transition: background 0.2s;
+      gap: 6px;
       cursor: pointer;
     }
-    .play-btn:active {
-      background: #1f3a7c;
-    }
-
-    /* Banner ad placeholder (AdSonar) */
     .ad-banner {
       background: #e9edf4;
       border-radius: 20px;
-      margin: 20px 0 24px;
+      margin: 16px 0;
       padding: 12px;
       text-align: center;
       font-size: 12px;
-      color: #3b4e6b;
       border: 1px dashed #9aaec9;
-      transition: all 0.1s;
     }
-    .ad-banner span {
-      font-weight: 600;
-      background: #ffffffaa;
-      padding: 4px 12px;
-      border-radius: 40px;
-    }
-
-    /* Modal / game popup */
     .modal-overlay {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0, 0, 0, 0.75);
+      background: rgba(0,0,0,0.7);
       backdrop-filter: blur(6px);
       z-index: 1000;
       display: flex;
@@ -182,39 +205,16 @@
       max-width: 340px;
       width: 85%;
       border-radius: 48px;
-      padding: 28px 20px 32px;
+      padding: 24px 20px 28px;
       text-align: center;
-      box-shadow: 0 30px 40px rgba(0,0,0,0.2);
       position: relative;
     }
     .modal-close {
       position: absolute;
-      top: 18px;
-      right: 22px;
+      top: 16px;
+      right: 20px;
       font-size: 24px;
       cursor: pointer;
-      color: #8f9eb2;
-    }
-    .modal-game-icon {
-      font-size: 64px;
-      margin: 8px 0 12px;
-    }
-    .modal-game-title {
-      font-size: 26px;
-      font-weight: 800;
-      margin-bottom: 16px;
-    }
-    .modal-description {
-      color: #2c3e5c;
-      font-size: 14px;
-      margin: 8px 0 12px;
-      line-height: 1.4;
-    }
-    .reward-section {
-      background: #f0f6ff;
-      border-radius: 28px;
-      padding: 14px;
-      margin: 20px 0 16px;
     }
     .reward-amount {
       font-size: 28px;
@@ -224,31 +224,25 @@
     .ad-button {
       background: #1f3a7c;
       width: 100%;
-      padding: 14px;
+      padding: 12px;
       border-radius: 60px;
       font-weight: 700;
-      font-size: 16px;
       color: white;
       border: none;
       margin-top: 12px;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 12px;
+      gap: 8px;
       cursor: pointer;
     }
     .secondary-btn {
       background: #eef2ff;
       color: #1f3a7c;
-      margin-top: 10px;
+      margin-top: 8px;
       border: 1px solid #cbd9f0;
     }
-    .close-modal-btn {
-      background: #e9eef3;
-      color: #2d4059;
-      margin-top: 12px;
-    }
-    .toast-msg {
+    .toast {
       position: fixed;
       bottom: 30px;
       left: 50%;
@@ -258,24 +252,26 @@
       padding: 10px 20px;
       border-radius: 50px;
       font-size: 13px;
-      font-weight: 500;
       z-index: 1100;
       opacity: 0;
       transition: 0.2s;
       pointer-events: none;
     }
-    .toast-msg.show {
+    .toast.show {
       opacity: 1;
     }
     footer {
       text-align: center;
       font-size: 11px;
       color: #6f85a5;
-      margin-top: 28px;
+      margin-top: 20px;
+      padding-top: 16px;
       border-top: 1px solid #e2eaf5;
-      padding-top: 20px;
     }
-    @media (max-width: 420px) {
+    @media (max-width: 480px) {
+      .metric-value {
+        font-size: 20px;
+      }
       .games-grid {
         grid-template-columns: 1fr 1fr;
       }
@@ -283,78 +279,97 @@
   </style>
 </head>
 <body>
-<div class="tma-container">
-  <!-- Header with champion coins -->
-  <div class="header-section">
-    <div class="title-area">
-      <h1><i class="fas fa-crown" style="color:#e6a017; font-size: 24px;"></i> Champion Games</h1>
-      <p>play · earn · rule the arena</p>
+<div class="container">
+  <div class="header">
+    <div class="title-main">Start earning now</div>
+    <div class="demo-badge"><i class="fas fa-mobile-alt"></i> TMA · AdSonar (Debug)</div>
+  </div>
+
+  <div class="balance-row">
+    <span class="balance-label"><i class="fas fa-coins"></i> My Champion Coins</span>
+    <span class="balance-value" id="championCoins">0</span>
+  </div>
+
+  <div class="metrics-grid">
+    <div class="metric-card">
+      <div class="metric-title">Daily Revenue</div>
+      <div class="metric-value">$2,084</div>
+      <div class="metric-trend"><i class="fas fa-arrow-up"></i> +11.8%</div>
     </div>
-    <div class="coin-balance">
-      <i class="fas fa-coins"></i>
-      <span class="balance-value" id="championCoins">0</span>
+    <div class="metric-card">
+      <div class="metric-title">Average CPM</div>
+      <div class="metric-value">$2.30</div>
+      <div class="metric-trend"><i class="fas fa-arrow-up"></i> +1.5%</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-title">Impressions</div>
+      <div class="metric-value">102.8K</div>
+      <div class="metric-trend"><i class="fas fa-arrow-up"></i> +12%</div>
     </div>
   </div>
 
-  <!-- Games grid: Magic Words, Treasure Maze, Chef Battle, Farm Frenzy, Champion -->
-  <div class="games-grid" id="gamesGrid">
-    <!-- dynamic data will be generated via JS, but we write static structure for clarity -->
+  <div class="chart-container">
+    <div class="chart-header">
+      <span>📈 Revenue (last 7 days)</span>
+      <span style="font-size:12px;">AdSonar powered</span>
+    </div>
+    <canvas id="revenueChart" width="400" height="180"></canvas>
   </div>
 
-  <!-- AdSonar Banner Placement (Mockup + Integration Ready) -->
+  <div class="section-title">
+    <i class="fas fa-trophy" style="color:#e6a017;"></i> Champion Games
+    <span style="font-size:12px; font-weight:normal;">play · watch ads · earn coins</span>
+  </div>
+  <div class="games-grid" id="gamesGrid"></div>
+
+  <!-- AdSonar banner placeholder -->
   <div class="ad-banner" id="adsonarBanner">
     <i class="fas fa-ad"></i> <span>AdSonar Banner</span> — your ad here
   </div>
 
-  <!-- Modal for mini-game & rewarded ad -->
-  <div class="modal-overlay" id="gameModal">
-    <div class="game-modal">
-      <div class="modal-close" id="closeModalBtn">&times;</div>
-      <div class="modal-game-icon" id="modalIcon">🎮</div>
-      <div class="modal-game-title" id="modalTitle">Game</div>
-      <div class="modal-description" id="modalDesc">Play & watch a short ad to earn Champion Coins!</div>
-      <div class="reward-section">
-        <i class="fas fa-gem"></i> Reward <br>
-        <span class="reward-amount" id="rewardAmount">+50</span> Coins
-      </div>
-      <button class="ad-button" id="watchAdBtn">
-        <i class="fas fa-play-circle"></i> Watch Ad & Earn
-      </button>
-      <button class="ad-button secondary-btn close-modal-btn" id="modalCancelBtn">
-        Maybe later
-      </button>
-      <div style="font-size: 11px; margin-top: 12px; color:#7b8ba3;">
-        Powered by AdSonar — rewarded video
-      </div>
-    </div>
-  </div>
-
-  <div id="toastMsg" class="toast-msg">✨ + Coins earned!</div>
   <footer>
-    <i class="fas fa-chart-line"></i> Monetize with AdSonar · every play boosts revenue
+    <i class="fas fa-chart-line"></i> Monetized with AdSonar · rewarded video & banners (debug mode on)
   </footer>
 </div>
 
+<!-- Modal for rewarded ad -->
+<div class="modal-overlay" id="gameModal">
+  <div class="game-modal">
+    <div class="modal-close" id="closeModalBtn">&times;</div>
+    <div class="game-icon" id="modalIcon" style="font-size:48px;">🎮</div>
+    <h3 id="modalTitle" style="margin:10px 0 6px;">Game</h3>
+    <p id="modalDesc" style="font-size:13px; color:#4b5563;">Watch a short ad to earn coins</p>
+    <div style="margin:16px 0;">
+      <span class="reward-amount" id="rewardAmount">+50</span> Coins
+    </div>
+    <button class="ad-button" id="watchAdBtn">
+      <i class="fas fa-play-circle"></i> Watch Ad & Earn
+    </button>
+    <button class="ad-button secondary-btn" id="modalCancelBtn">Maybe later</button>
+  </div>
+</div>
+<div id="toastMsg" class="toast"></div>
+
 <script>
   // ------------------------------
-  // Game definitions (5 Champions)
+  // GAMES DATA (Magic Words, Treasure Maze, Chef Battle, Farm Frenzy, Champion)
   // ------------------------------
   const GAMES = [
-    { id: 'magic', name: 'Magic Words', icon: '🪄', desc: 'Spell the secret word! Quick thinking boosts your charm.', rewardBase: 45, unit: 'words' },
-    { id: 'treasure', name: 'Treasure Maze', icon: '🗺️', desc: 'Navigate the labyrinth. Find gold & glory!', rewardBase: 55, unit: 'gems' },
-    { id: 'chef', name: 'Chef Battle', icon: '🍳', desc: 'Cook-off duel! Master recipes & win.', rewardBase: 50, unit: 'plates' },
-    { id: 'farm', name: 'Farm Frenzy', icon: '🚜', desc: 'Harvest crops, feed animals, become farming legend.', rewardBase: 40, unit: 'harvest' },
-    { id: 'champion', name: 'Ultimate Champion', icon: '🏆', desc: 'Arena fight! Beat rivals for champion crown.', rewardBase: 65, unit: 'trophies' }
+    { id: 'magic', name: 'Magic Words', icon: '🪄', desc: 'Spell enchanting words!', rewardBase: 45 },
+    { id: 'treasure', name: 'Treasure Maze', icon: '🗺️', desc: 'Find the golden chest!', rewardBase: 55 },
+    { id: 'chef', name: 'Chef Battle', icon: '🍳', desc: 'Cook-off duel!', rewardBase: 50 },
+    { id: 'farm', name: 'Farm Frenzy', icon: '🚜', desc: 'Harvest & grow!', rewardBase: 40 },
+    { id: 'champion', name: 'Ultimate Champion', icon: '🏆', desc: 'Arena champion!', rewardBase: 65 }
   ];
 
-  // User data (simulate TMA storage)
   let userCoins = 0;
-  let currentGame = null;     // holds selected game object
+  let currentGame = null;
+  let currentReward = 0;
 
   // DOM elements
   const coinsSpan = document.getElementById('championCoins');
   const gamesContainer = document.getElementById('gamesGrid');
-  const modalOverlay = document.getElementById('gameModal');
+  const modal = document.getElementById('gameModal');
   const modalIcon = document.getElementById('modalIcon');
   const modalTitle = document.getElementById('modalTitle');
   const modalDesc = document.getElementById('modalDesc');
@@ -364,154 +379,121 @@
   const closeModalBtn = document.getElementById('closeModalBtn');
   const toastEl = document.getElementById('toastMsg');
 
-  // Helper: Update UI balance
+  // Helper functions
+  function showToast(msg, duration = 2000) {
+    toastEl.innerText = msg;
+    toastEl.classList.add('show');
+    setTimeout(() => toastEl.classList.remove('show'), duration);
+  }
+
   function updateBalanceUI() {
     coinsSpan.innerText = userCoins;
-    // Optional: save to localStorage for persistence across session (TMA friendly)
     localStorage.setItem('champion_coins', userCoins);
   }
 
-  // Show toast
-  function showToast(message, duration = 2000) {
-    toastEl.innerText = message;
-    toastEl.classList.add('show');
-    setTimeout(() => {
-      toastEl.classList.remove('show');
-    }, duration);
+  function loadUserData() {
+    const saved = localStorage.getItem('champion_coins');
+    userCoins = saved ? parseInt(saved) : 250;
+    updateBalanceUI();
   }
 
-  // ----- AdSonar Monetization Integration (Mock + ready-to-replace) -----
-  // This is a placeholder for real AdSonar SDK.
-  // In production, replace showRewardedAd with actual AdSonar rewarded video call.
-  // AdSonar typically provides methods: AdSonar.showRewardedVideo(callback)
-  function showAdSonarRewardedVideo(onReward, onError) {
-    // Simulate ad loading with a short delay (realistic TMA experience)
-    // For actual integration, replace with:
-    // if (window.AdSonar) { AdSonar.showRewardedVideo({ onRewarded: onReward, onClose: ... }) }
-    console.log('[AdSonar] Requesting rewarded video...');
-    // Mock ad behaviour
-    const mockAdDelay = 800;
-    showToast("📺 Loading ad...", 1200);
-    setTimeout(() => {
-      // 90% success simulation
-      const success = Math.random() > 0.1;
-      if (success) {
-        onReward();
-      } else {
-        if (onError) onError("Ad load failed, try again");
-        showToast("⚠️ Ad unavailable. Please retry", 1800);
-      }
-    }, mockAdDelay);
-  }
-
-  // Show banner ad placeholder (replace with AdSonar banner code)
-  function refreshAdSonarBanner() {
-    // Real integration: AdSonar.showBanner('banner-container')
-    const bannerDiv = document.getElementById('adsonarBanner');
-    if (bannerDiv) {
-      // optional: dynamic message to show active monetization
-      bannerDiv.innerHTML = `<i class="fas fa-ad"></i> <span>AdSonar Banner</span> — Champion ready • CPM optimized`;
-    }
-  }
-
-  // Reward player after watching video
   function awardCoins(amount, gameName) {
     userCoins += amount;
     updateBalanceUI();
-    showToast(`🏆 +${amount} coins from ${gameName}!`);
-    // You could also send analytics to AdSonar / Telegram
-    if (window.Telegram && window.Telegram.WebApp) {
-      const tg = window.Telegram.WebApp;
-      tg.HapticFeedback.impactOccurred('light');
+    showToast(`🏆 +${amount} coins from ${gameName}!`, 1800);
+    if (window.Telegram?.WebApp) {
+      window.Telegram.WebApp.HapticFeedback.impactOccurred('light');
     }
   }
 
-  // Open modal for specific game
+  // ------------- REAL AdSonar Rewarded Video Integration -------------
+  // Uses the Sonar SDK loaded from script in <head> with debug mode on
+  // Ad unit "nerk" as shown in screenshot
+  function showAdSonarRewardedVideo(onReward, onError) {
+    if (typeof window.Sonar !== 'undefined' && window.Sonar.show) {
+      console.log('[AdSonar] Debug mode: showing rewarded ad unit: nerk');
+      // According to Sonar documentation, we call show with ad unit and callbacks
+      window.Sonar.show({
+        adUnit: "nerk",
+        onRewarded: () => {
+          console.log('[AdSonar] Reward granted');
+          onReward();
+        },
+        onClose: () => {
+          console.log('[AdSonar] Ad closed (not rewarded)');
+          // Optionally handle close without reward
+        },
+        onError: (err) => {
+          console.error('[AdSonar] Error:', err);
+          onError(err || 'Ad error');
+        }
+      });
+    } else {
+      // Fallback mock in case SDK not loaded
+      console.warn('[AdSonar] SDK not loaded, using mock');
+      showToast('⚠️ AdSonar SDK not ready (mock mode)', 1500);
+      setTimeout(() => {
+        if (Math.random() > 0.1) {
+          onReward();
+        } else {
+          onError('Mock ad failed');
+        }
+      }, 800);
+    }
+  }
+
+  // Open modal for a game
   function openGameModal(game) {
     currentGame = game;
+    const dynamicReward = Math.floor(game.rewardBase + Math.random() * 20);
+    currentReward = dynamicReward;
     modalIcon.innerText = game.icon;
     modalTitle.innerText = game.name;
-    modalDesc.innerText = game.desc + ` Play a mini-challenge & watch an ad to earn coins.`;
-    // randomize reward between base and +20% for excitement
-    let dynamicReward = Math.floor(game.rewardBase + Math.random() * 15);
+    modalDesc.innerText = `${game.desc} Watch a short rewarded ad to earn coins.`;
     rewardAmountSpan.innerText = `+${dynamicReward}`;
-    // store reward in dataset for the button
-    watchAdBtn.setAttribute('data-reward', dynamicReward);
-    watchAdBtn.setAttribute('data-game', game.name);
-    modalOverlay.classList.add('active');
-    if (window.Telegram && window.Telegram.WebApp) {
-      window.Telegram.WebApp.expand();
-    }
+    modal.classList.add('active');
   }
 
-  // Close modal
   function closeModal() {
-    modalOverlay.classList.remove('active');
+    modal.classList.remove('active');
     currentGame = null;
+    currentReward = 0;
   }
 
-  // ---------- Mini interactive "game simulation" (adds fun) ----------
-  // Instead of just an ad, we simulate a quick micro-challenge before rewarding
-  // to mimic gameplay and increase engagement (TMA style)
-  function runMiniGameAndReward(game, rewardCoins) {
-    // This function simulates a playful 1-second interaction before giving reward
-    // but we already have "Watch Ad & Earn" button. However we can add an extra step:
-    // For champion style: we make the user tap or guess something inside modal.
-    // but to keep straightforward, the button triggers both ad & game-like feeling.
-    // Actually better: when user clicks "Watch Ad & Earn", we first show a mini-game prompt or interactive.
-    // But to ensure monetization, we will after ad reward directly.
-    // For higher engagement: we display a quick "tap to play" inside modal?
-    // I'll add a second step: after ad completes, we show a mini-game success.
-    // The current flow: click "Watch Ad & Earn" -> show ad -> on reward, we also add + reward + fun animation
-  }
-
-  // Event: Watch ad button inside modal
   function handleWatchAd() {
     if (!currentGame) return;
-    const rewardVal = parseInt(watchAdBtn.getAttribute('data-reward')) || 50;
-    const gameName = watchAdBtn.getAttribute('data-game') || currentGame.name;
-    // Disable button during ad process to avoid double click
     watchAdBtn.disabled = true;
     watchAdBtn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Loading ad...';
     
-    // Call AdSonar rewarded integration
     showAdSonarRewardedVideo(
       () => {
-        // Ad watched successfully → reward player
-        awardCoins(rewardVal, gameName);
-        // Additional gamification: simulate a "game victory" message
-        showToast(`🎉 Victory! You earned ${rewardVal} coins from ${gameName}`, 2200);
-        // Haptic feedback (TMA)
-        if (window.Telegram && window.Telegram.WebApp) {
+        awardCoins(currentReward, currentGame.name);
+        closeModal();
+        watchAdBtn.disabled = false;
+        watchAdBtn.innerHTML = '<i class="fas fa-play-circle"></i> Watch Ad & Earn';
+        if (window.Telegram?.WebApp) {
           window.Telegram.WebApp.HapticFeedback.notificationOccurred('success');
         }
-        // close modal after rewarding
-        closeModal();
-        // Re-enable button (if modal reopened later, reset)
-        watchAdBtn.disabled = false;
-        watchAdBtn.innerHTML = '<i class="fas fa-play-circle"></i> Watch Ad & Earn';
       },
-      (error) => {
-        console.warn('Ad error:', error);
+      (err) => {
+        console.warn('Ad error:', err);
+        showToast('Ad failed, please try again', 1800);
         watchAdBtn.disabled = false;
         watchAdBtn.innerHTML = '<i class="fas fa-play-circle"></i> Watch Ad & Earn';
-        showToast('Ad failed to load. Please check network or try again.', 2000);
       }
     );
   }
 
-  // ----- Render game cards dynamically -----
-  function renderGameCards() {
+  // Render game cards
+  function renderGames() {
     gamesContainer.innerHTML = '';
     GAMES.forEach(game => {
       const card = document.createElement('div');
       card.className = 'game-card';
-      card.setAttribute('data-id', game.id);
       card.innerHTML = `
         <div class="game-icon">${game.icon}</div>
         <div class="game-name">${game.name}</div>
-        <div class="game-stats"><i class="fas fa-star"></i> champion tier</div>
-        <button class="play-btn" data-game-id="${game.id}"><i class="fas fa-gamepad"></i> Play & Earn</button>
+        <button class="play-btn" data-id="${game.id}"><i class="fas fa-gamepad"></i> Play & Earn</button>
       `;
       const btn = card.querySelector('.play-btn');
       btn.addEventListener('click', (e) => {
@@ -522,109 +504,84 @@
     });
   }
 
-  // Initialize banner with AdSonar sample style
-  function initAdSonarPlaceholders() {
-    refreshAdSonarBanner();
-    // In real environment, you'd call AdSonar.init({ appId: "YOUR_ID" })
-    console.log('AdSonar integration ready — replace mock with real SDK');
-    // If using actual AdSonar script, load it dynamically (not required for demo but clean)
-    // Example placeholder: window.AdSonar = { showRewardedVideo: ... }
-    // For now we keep mock function.
+  // Revenue Chart
+  function initChart() {
+    const ctx = document.getElementById('revenueChart').getContext('2d');
+    new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+        datasets: [{
+          label: 'Revenue ($)',
+          data: [18750, 22100, 20450, 26800, 24700, 29200, 30850],
+          borderColor: '#3b82f6',
+          backgroundColor: 'rgba(59,130,246,0.1)',
+          borderWidth: 3,
+          pointRadius: 3,
+          pointBackgroundColor: '#3b82f6',
+          tension: 0.3,
+          fill: true
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        plugins: { legend: { display: false }, tooltip: { callbacks: { label: (ctx) => `$${ctx.raw.toLocaleString()}` } } },
+        scales: {
+          y: { beginAtZero: true, max: 33000, ticks: { stepSize: 10000, callback: (val) => val === 0 ? '$0' : val === 10000 ? '$10K' : val === 20000 ? '$20K' : val === 30000 ? '$30K' : '' } }
+        }
+      }
+    });
   }
 
-  // Save/Load coin balance
-  function loadUserData() {
-    const saved = localStorage.getItem('champion_coins');
-    if (saved !== null && !isNaN(parseInt(saved))) {
-      userCoins = parseInt(saved);
-    } else {
-      userCoins = 120; // starting bonus for new champion
-    }
-    updateBalanceUI();
-  }
-
-  // TMA specific: expand and main button support (optional)
+  // Telegram WebApp setup
   function setupTelegram() {
-    if (window.Telegram && window.Telegram.WebApp) {
+    if (window.Telegram?.WebApp) {
       const tg = window.Telegram.WebApp;
       tg.expand();
       tg.ready();
-      tg.setBackgroundColor('#f3f6fc');
-      tg.setHeaderColor('bg_color');
-      // Optional: main button to share referral?
-      tg.MainButton.setText('🏆 Invite Champion');
+      tg.setBackgroundColor('#f1f5f9');
+      tg.MainButton.setText('🏆 Earn More');
       tg.MainButton.show();
       tg.MainButton.onClick(() => {
-        showToast('Share Champion Games & earn extra coins!', 1500);
-        // simulate bonus
-        userCoins += 25;
-        updateBalanceUI();
-        showToast('🎁 +25 referral bonus!', 1800);
+        showToast('Play champion games & watch ads!', 1500);
       });
     }
   }
 
-  // Additional fun: when user closes modal, ensure button state reset
-  function resetModalButton() {
-    watchAdBtn.disabled = false;
-    watchAdBtn.innerHTML = '<i class="fas fa-play-circle"></i> Watch Ad & Earn';
+  // Banner placeholder (can be replaced with Sonar banner)
+  function setupAdBanner() {
+    const bannerDiv = document.getElementById('adsonarBanner');
+    // If Sonar supports banners, you could call Sonar.showBanner(...) here
+    bannerDiv.innerHTML = `<i class="fas fa-ad"></i> <span>AdSonar Banner</span> — Ready for your banner ad`;
   }
 
-  // Event listeners
   function bindEvents() {
     watchAdBtn.addEventListener('click', handleWatchAd);
-    modalCancelBtn.addEventListener('click', () => {
-      closeModal();
-      resetModalButton();
-    });
-    closeModalBtn.addEventListener('click', () => {
-      closeModal();
-      resetModalButton();
-    });
-    // optional: close on overlay click
-    modalOverlay.addEventListener('click', (e) => {
-      if (e.target === modalOverlay) {
-        closeModal();
-        resetModalButton();
-      }
-    });
+    modalCancelBtn.addEventListener('click', closeModal);
+    closeModalBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
   }
 
-  // ----- AdSonar real integration note (fully described) -----
-  // This TMA is fully ready to be monetized. Replace the mock showAdSonarRewardedVideo
-  // with actual AdSonar SDK methods:
-  /*
-    Example integration (after including AdSonar JS):
-    function showAdSonarRewardedVideo(onReward, onError) {
-      if (window.AdSonar && AdSonar.isReady()) {
-        AdSonar.showRewardedAd({
-          placement: 'champion_reward',
-          onRewarded: () => onReward(),
-          onError: (err) => onError(err),
-          onClose: () => console.log('ad closed')
-        });
-      } else {
-        onError('AdSonar not ready');
-      }
-    }
-    
-    Also, banner placement:
-    AdSonar.showBanner('adsonarBanner', { size: '320x50' });
-  */
-
-  // Initialize everything
   function init() {
     loadUserData();
-    renderGameCards();
-    initAdSonarPlaceholders();
-    bindEvents();
+    renderGames();
+    initChart();
     setupTelegram();
-    // Expose for debugging
-    window.refreshBalance = () => updateBalanceUI();
-    console.log('Champion TMA ready · monetization with AdSonar active');
+    setupAdBanner();
+    bindEvents();
+    // Log debug mode status
+    if (typeof window.Sonar !== 'undefined') {
+      console.log('✅ AdSonar SDK loaded with debug mode enabled (isDebug=true)');
+    } else {
+      console.warn('⚠️ AdSonar SDK not loaded - check script URL');
+    }
   }
 
   init();
 </script>
 </body>
-</html>
+</html>         
+
+
+  
